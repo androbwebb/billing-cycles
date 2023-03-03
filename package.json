@@ -1,4 +1,19 @@
 {
   "name": "billing-cycles",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "description": "Package for determining billing cycle start & end times",
+  "license": "MIT",
+  "repository": "androbwebb/billing-cycles",
+  "main": "dist/index.js",
+  "keywords": [
+    "billing-cycles",
+    "date",
+    "cycle",
+    "period",
+    "billing",
+    "dates",
+    "npm",
+    "package",
+    "androbwebb"
+  ]
 }
