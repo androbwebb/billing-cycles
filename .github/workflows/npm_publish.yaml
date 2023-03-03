@@ -15,6 +15,13 @@ jobs:
           node-version: 16.13.1
       - run: npm i -D
       - run: npm run test
+      - name: 'Automated Version Bump'
+        uses: 'phips28/gh-action-bump-version@master'
+        with:
+          minor-wording: 'add,Adds,new'
+          major-wording: 'MAJOR,cut-major'
+          patch-wording: 'patch,fixes,fix,bug'     # Providing patch-wording will override commits
+                                                   # defaulting to a patch bump.
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
