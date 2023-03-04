@@ -1,6 +1,6 @@
 {
   "name": "billing-cycles",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Package for determining billing cycle start & end times",
   "license": "MIT",
   "repository": "androbwebb/billing-cycles",
