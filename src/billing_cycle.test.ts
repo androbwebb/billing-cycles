@@ -3,7 +3,7 @@ import { BillingCycle } from "./billing_cycle";
 describe("BillingCycle", () => {
   describe("numberOfCyclesSinceCreated", () => {
     it("correctly calculates number of monthly cycles since created", () => {
-      const bc = new BillingCycle(new Date("2022-01-31"), 1, "months");
+      const bc = new BillingCycle(new Date("2022-01-31"), 1, "month");
       expect(bc.numberOfCyclesSinceCreated(new Date("2023-01-31"))).toEqual(12);
       expect(bc.numberOfCyclesSinceCreated(new Date("2023-06-04"))).toEqual(16);
       expect(bc.numberOfCyclesSinceCreated(new Date("1990-01-31"))).toEqual(0);
@@ -16,12 +16,28 @@ describe("BillingCycle", () => {
       expect(bc.numberOfCyclesSinceCreated(new Date("1990-01-31"))).toEqual(0);
       expect(bc.numberOfCyclesSinceCreated(new Date("2022-02-01"))).toEqual(0);
     });
+    it("correctly calculates number of quarterly cycles since created", () => {
+      const bc = new BillingCycle(new Date("2022-01-31"), 1, "quarter");
+      expect(bc.numberOfCyclesSinceCreated(new Date("2023-01-31"))).toEqual(4);
+      expect(bc.numberOfCyclesSinceCreated(new Date("2023-06-04"))).toEqual(5);
+      expect(bc.numberOfCyclesSinceCreated(new Date("1990-01-31"))).toEqual(0);
+      expect(bc.numberOfCyclesSinceCreated(new Date("2022-02-01"))).toEqual(0);
+    });
     it("correctly calculates number of yearly cycles since created", () => {
-      const bc = new BillingCycle(new Date("2022-01-31"), 1, "years");
+      const bc = new BillingCycle(new Date("2022-01-31"), 1, "year");
       expect(bc.numberOfCyclesSinceCreated(new Date("2023-01-31"))).toEqual(1);
       expect(bc.numberOfCyclesSinceCreated(new Date("2023-06-04"))).toEqual(1);
       expect(bc.numberOfCyclesSinceCreated(new Date("1990-01-31"))).toEqual(0);
       expect(bc.numberOfCyclesSinceCreated(new Date("2022-12-01"))).toEqual(0);
+    });
+    it("correctly calculates next due at of yearly cycles that start on leap years", () => {
+      const bc = new BillingCycle(new Date("2020-02-29"), 1, "years");
+      expect(bc.nextDueAt(new Date("2022-01-31")).toISOString()).toEqual(
+          "2022-02-28T00:00:00.000Z",
+      );
+      expect(bc.nextDueAt(new Date("2023-10-31")).toISOString()).toEqual(
+          "2024-02-29T00:00:00.000Z",
+      );
     });
   });
 
@@ -51,6 +67,21 @@ describe("BillingCycle", () => {
       );
       expect(bc.nextDueAt(new Date("2023-02-01")).toISOString()).toEqual(
         "2023-03-31T00:00:00.000Z",
+      );
+      expect(bc.nextDueAt(new Date("1990-01-31")).toISOString()).toEqual(
+        "2022-01-31T00:00:00.000Z",
+      );
+    });
+    it("correctly calculates next due at of multi-monthly cycles", () => {
+      const bc = new BillingCycle(new Date("2022-01-31"), 3, "months");
+      expect(bc.nextDueAt(new Date("2023-01-31")).toISOString()).toEqual(
+        "2023-01-31T00:00:00.000Z",
+      );
+      expect(bc.nextDueAt(new Date("2023-01-28")).toISOString()).toEqual(
+        "2023-01-31T00:00:00.000Z",
+      );
+      expect(bc.nextDueAt(new Date("2023-02-01")).toISOString()).toEqual(
+        "2023-04-30T00:00:00.000Z",
       );
       expect(bc.nextDueAt(new Date("1990-01-31")).toISOString()).toEqual(
         "2022-01-31T00:00:00.000Z",

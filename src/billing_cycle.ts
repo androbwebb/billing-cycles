@@ -1,6 +1,7 @@
 import { add, intervalToDuration, yearsToMonths } from "date-fns";
 
 type DurationUnit = "years" | "months";
+export type DurationUnitInput = "quarter" | "quarters" | "year" | "month" | "years" |"months"; // Allow users to specify singular or plural.
 
 export class BillingCycle {
   anchor: Date;
@@ -9,12 +10,26 @@ export class BillingCycle {
 
   constructor(
     anchor: Date,
-    intervalValue: number,
-    intervalUnit: DurationUnit = "months",
+    intervalValue: number = 1,
+    intervalUnit: DurationUnitInput = "months",
   ) {
     this.anchor = anchor;
     this.intervalValue = intervalValue;
-    this.unit = intervalUnit;
+    switch (intervalUnit) {
+      case "year":
+      case "years":
+        this.unit = "years";
+        break;
+      case "month":
+      case "months":
+        this.unit = "months";
+        break;
+      case "quarter":
+      case "quarters":
+        this.unit = "months";
+        this.intervalValue *= 3
+        break;
+    }
   }
 
   /**
