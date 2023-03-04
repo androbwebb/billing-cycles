@@ -1,6 +1,7 @@
 # billing-cycles
 
 ![npm](https://img.shields.io/npm/v/billing-cycles)
+![npm type definitions](https://img.shields.io/npm/types/billing-cycles)
 
 JS package for determining billing cycles. Used for handling date math to calculate past & future billing dates.
 
