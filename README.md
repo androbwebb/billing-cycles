@@ -3,7 +3,8 @@
 ![npm](https://img.shields.io/npm/v/billing-cycles)
 ![npm type definitions](https://img.shields.io/npm/types/billing-cycles)
 
-JS package for determining billing cycles. Used for handling date math to calculate past & future billing dates.
+JS package for determining billing cycle start & end dates based on an anchor date + billing interval. 
+Used for handling date math to calculate past & future billing dates.
 
 Supports increments of monthly, quarterly and yearly billing.
 
@@ -97,7 +98,7 @@ let now: Date;
 
 const bc = new BillingCycle(
     new Date("2020-02-29"),
-    1, "years" 
+    1, "year" 
 );
 
 now = new Date("2023-04-09");
