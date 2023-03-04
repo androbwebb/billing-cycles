@@ -17,6 +17,7 @@ jobs:
           node-version: 16.13.1
       - run: npm i -D
       - run: npm run test
+      - run: npm run build
       - name: 'Automated Version Bump'
         uses: 'phips28/gh-action-bump-version@master'
         with:
