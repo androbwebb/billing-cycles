@@ -109,6 +109,53 @@ export class BillingCycle {
     return result;
   }
 
+  previousNPeriods(n: number, now?: Date): [Date, Date][] {
+    now = now ?? new Date();
+
+    const first = this.prevDueAt(now);
+    if (!first) {
+        return [];
+    }
+
+    const result: [Date, Date][] = [[first, this.nextDueAt(new Date(first.getTime() + 1))]];
+
+    for (let i = 1; i < n; i++) {
+        const prev = result[i - 1][0];
+        const nextPrev = this.prevDueAt(prev);
+        if (nextPrev === undefined || prev.getTime() === nextPrev.getTime()) {
+            break;
+        }
+      if (nextPrev?.getTime() < this.anchor.getTime()) {
+        break;
+      }
+        result.push([nextPrev, this.nextDueAt(new Date(nextPrev.getTime() + 1))]);
+    }
+
+    return result;
+  }
+
+  nextNPeriods(n: number, now?: Date): [Date, Date][] {
+    now = now ?? new Date();
+
+    const first = this.prevDueAt(now);
+    if (!first) {
+        return [];
+    }
+
+    const result: [Date, Date][] = [[first, this.nextDueAt(new Date(first.getTime() + 1))]];
+
+    for (let i = 1; i < n; i++) {
+        const prev = result[i - 1][0];
+        const nextPrev = this.nextDueAt(new Date(prev.getTime() + 1));
+        if (nextPrev === undefined) {
+            break;
+        }
+        result.push([nextPrev, this.nextDueAt(new Date(nextPrev.getTime() + 1))]);
+    }
+
+    return result;
+  }
+
   numberOfCyclesSinceCreated(now?: Date) {
     return Math.max(0, this.cycleCountDifference(now));
   }
@@ -147,17 +194,17 @@ export class BillingCycle {
 
   percentElapsed(now?: Date) {
     now = now ?? new Date();
-    return 100 * (this.timeElapsed(now) / this.secondsInCurrentCycle(now));
+    return Math.max(100 * (this.timeElapsed(now) / this.secondsInCurrentCycle(now)), 0);
   }
 
   percentRemaining(now?: Date) {
     now = now ?? new Date();
-    return 100 * (this.timeRemaining(now) / this.secondsInCurrentCycle(now));
+    return Math.max(100 * (this.timeRemaining(now) / this.secondsInCurrentCycle(now)), 0);
   }
 
   timeRemaining(now?: Date) {
     now = now ?? new Date();
-    return this.nextDueAt(now).getTime() - now.getTime();
+    return Math.max(this.nextDueAt(now).getTime() - now.getTime(), 0);
   }
 
   timeElapsed(now?: Date) {
@@ -166,7 +213,7 @@ export class BillingCycle {
     if (!prev) {
       return -1;
     }
-    return now.getTime() - prev.getTime();
+    return Math.max(0, now.getTime() - prev.getTime());
   }
 
   secondsInCurrentCycle(now?: Date) {
